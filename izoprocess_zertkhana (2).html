@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Виртуалды зертхана — Изопроцестер | 8-сынып Физика</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fira+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07090f;
+    --surface: #0e1220;
+    --surface2: #161d30;
+    --border: rgba(255,255,255,0.07);
+    --text: #dde8f8;
+    --text2: #6878a0;
+    --blue: #5ab0f0;
+    --blue-dim: #0a1f40;
+    --teal: #28d090;
+    --teal-dim: #042a20;
+    --amber: #f0b028;
+    --amber-dim: #302000;
+    --red: #f06858;
+    --red-dim: #300808;
+    --purple: #9878f0;
+    --purple-dim: #180840;
+    --green: #48d870;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; }
+
+  header { background: linear-gradient(135deg, #07090f, #0f1530, #070f18); padding: 28px 32px 22px; border-bottom: 1px solid var(--border); }
+  .badge-h { display: inline-block; background: rgba(90,176,240,0.12); color: var(--blue); border: 1px solid rgba(90,176,240,0.25); border-radius: 20px; padding: 3px 12px; font-size: 12px; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; }
+  header h1 { font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+  header p { font-size: 14px; color: var(--text2); font-weight: 600; }
+
+  main { padding: 20px; max-width: 980px; margin: 0 auto; }
+
+  .guide-block { background: #fff; color: #1a1a2e; border-radius: var(--radius); padding: 22px 24px; margin-bottom: 16px; }
+  .g-title { font-size: 15px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+  .g-desc { font-size: 14px; color: #444; line-height: 1.7; margin-bottom: 16px; border-left: 3px solid #5ab0f0; padding-left: 12px; }
+  .guide-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px){ .guide-grid { grid-template-columns: 1fr; } }
+  .guide-section { background: #f5f7fa; border-radius: 10px; padding: 14px 16px; }
+  .guide-section h3 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #0a3a6a; margin-bottom: 10px; }
+  .guide-section ol { padding-left: 18px; }
+  .guide-section li { font-size: 13px; color: #333; line-height: 1.8; }
+  .q-list { counter-reset: qc; padding-left: 0 !important; list-style: none !important; }
+  .q-list li { counter-increment: qc; font-size: 13px; color: #333; line-height: 1.8; }
+  .q-list li::before { content: counter(qc) ". "; font-weight: 700; color: #0a3a6a; }
+  .answer-box { width: 100%; margin-top: 10px; border: 1px solid #d0d7de; border-radius: 8px; padding: 8px 12px; font-size: 13px; font-family: 'Nunito', sans-serif; color: #1a1a2e; resize: vertical; min-height: 80px; background: #fff; }
+  .forms-btn { display: block; margin-top: 12px; background: #0a3a6a; color: #fff; text-align: center; padding: 10px 16px; border-radius: 8px; font-size: 14px; font-weight: 700; text-decoration: none; }
+
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+  .tab-btn { flex: 1; min-width: 110px; padding: 10px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); border-radius: var(--radius-sm); font-family: 'Nunito', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+  .tab-btn.active { background: var(--blue-dim); color: var(--blue); border-color: rgba(90,176,240,0.3); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 14px; }
+  .panel-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 14px; }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  @media(max-width:620px){ .grid2 { grid-template-columns: 1fr; } }
+
+  .sl-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .sl-lbl { font-size: 13px; color: var(--text2); font-weight: 600; white-space: nowrap; min-width: 110px; }
+  input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; border-radius: 2px; background: var(--surface2); outline: none; cursor: pointer; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--blue); cursor: pointer; border: 2px solid var(--bg); }
+  .sl-val { font-size: 14px; font-weight: 700; min-width: 70px; text-align: right; }
+
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .stat { background: var(--surface2); border-radius: var(--radius-sm); padding: 11px 14px; border: 1px solid var(--border); }
+  .stat .s-lbl { font-size: 11px; color: var(--text2); font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px; }
+  .stat .s-val { font-size: 18px; font-weight: 800; }
+
+  canvas { display: block; border-radius: var(--radius-sm); border: 1px solid var(--border); margin: 0 auto; }
+  .canvas-wrap p { font-size: 12px; color: var(--text2); margin-top: 8px; font-weight: 600; text-align: center; }
+
+  .formula-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 12px; }
+  .formula-box .f-lbl { font-size: 11px; color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .formula-box .f-eq { font-family: 'Fira Mono', monospace; font-size: 14px; color: var(--blue); margin-bottom: 4px; }
+  .formula-box .f-val { font-size: 15px; font-weight: 800; color: var(--amber); }
+
+  .info-panel { background: linear-gradient(135deg, #07090f, #0d1530); border: 1px solid rgba(90,176,240,0.12); border-radius: var(--radius); padding: 16px 20px; font-size: 14px; line-height: 1.7; color: #90a8c8; margin-bottom: 14px; }
+  .info-panel strong { color: var(--blue); }
+
+  .process-card { border-radius: var(--radius-sm); padding: 14px 16px; border: 1px solid; margin-bottom: 10px; }
+  .iso-t { background: rgba(90,176,240,0.08); border-color: rgba(90,176,240,0.25); }
+  .iso-p { background: rgba(40,208,144,0.08); border-color: rgba(40,208,144,0.25); }
+  .iso-v { background: rgba(240,176,40,0.08); border-color: rgba(240,176,40,0.25); }
+  .process-card h4 { font-size: 14px; font-weight: 800; margin-bottom: 4px; }
+  .process-card p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { background: var(--surface2); color: var(--text2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; font-size: 11px; padding: 10px 14px; text-align: left; }
+  .data-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .hl { color: var(--amber); font-weight: 700; font-family: 'Fira Mono', monospace; }
+
+  footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text2); border-top: 1px solid var(--border); margin-top: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge-h">8-СЫНЫП · ФИЗИКА</div>
+  <h1>🧪 Виртуалды зертхана</h1>
+  <p>Изопроцестер · Графиктер · Дальтон заңы · Газ қоспасының қысымы</p>
+</header>
+
+<main>
+
+  <div class="guide-block">
+    <div class="g-title">🎯 Зертханалық жұмыс мақсаты</div>
+    <div class="g-desc">Идеал газдың үш негізгі изопроцесінің графиктерін талдау: изотерма (PV — гипербола), изобара (VT — түзу), изохора (PT — түзу). Графиктердің параметрге тәуелділігін және Дальтон заңын зерттеу.</div>
+    <div class="guide-grid">
+      <div class="guide-section">
+        <h3>📋 Жұмыс қадамдары</h3>
+        <ol>
+          <li>Изопроцесс түрін таңдаңыз</li>
+          <li>Бастапқы параметрлерді реттеңіз</li>
+          <li>Өзгеретін шаманы бақылаңыз</li>
+          <li>PV, PT, VT графиктерін зерттеңіз</li>
+          <li>Дальтон заңы бөлімінде газдар қысымын қосыңыз</li>
+          <li>Нәтижелерді кестеге тіркеңіз</li>
+        </ol>
+      </div>
+      <div class="guide-section">
+        <h3>❓ Тапсырма сұрақтары</h3>
+        <ul class="q-list">
+          <li>PV графигінде изотерма неліктен гипербола түрінде болады? Температура өссе гипербола қалай ығысады?</li>
+          <li>VT графигінде изобара түзуі координата басынан өте ме? Неліктен?</li>
+          <li>PT графигінде екі изохораның көлемдері V₁ &lt; V₂ болса, қай изохораның еңісі үлкен болады?</li>
+          <li>Дальтон заңы бойынша газ қоспасының қысымы компоненттердің ішінара қысымдарынан үлкен бола ала ма? График арқылы түсіндіріңіз.</li>
+        </ul>
+        <textarea class="answer-box" placeholder="Жауаптарыңызды осында жазыңыз..."></textarea>
+        <a class="forms-btn" href="https://docs.google.com/forms/d/e/1FAIpQLSfklXQf8I9vDbYlLVguBR0Z9cqx7yGATx9b1BsPPM1flEztwQ/viewform" target="_blank">📝 Жауаптарды Google Forms-қа жіберу ↗</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('isoterm', this)">🌡️ Изотермдік</button>
+    <button class="tab-btn" onclick="switchTab('isobar', this)">📊 Изобаралық</button>
+    <button class="tab-btn" onclick="switchTab('isochor', this)">🔒 Изохоралық</button>
+    <button class="tab-btn" onclick="switchTab('dalton', this)">⚗️ Дальтон заңы</button>
+    <button class="tab-btn" onclick="switchTab('graphs', this)">📈 Барлық графиктер</button>
+  </div>
+
+  <!-- ISOTERM -->
+  <div id="tab-isoterm" class="tab-content active">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title">Параметрлер (T = const)</div>
+        <div style="background:var(--blue-dim); border:1px solid rgba(90,176,240,0.2); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:14px; font-size:13px; color:var(--blue); font-weight:700;">
+          Бойль-Мариотт заңы: P₁V₁ = P₂V₂
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Температура T (К)</span>
+          <input type="range" id="it-T" min="200" max="600" step="10" value="300">
+          <span class="sl-val" id="it-T-out" style="color:var(--blue);">300 К</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Көлем V (л)</span>
+          <input type="range" id="it-V" min="1" max="20" step="0.5" value="5">
+          <span class="sl-val" id="it-V-out" style="color:var(--teal);">5 л</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Зат мөлшері (моль)</span>
+          <input type="range" id="it-n" min="0.1" max="2" step="0.1" value="1">
+          <span class="sl-val" id="it-n-out" style="color:var(--amber);">1.0 моль</span>
+        </div>
+        <div class="stat-grid" style="margin-top:6px;">
+          <div class="stat">
+            <div class="s-lbl">Қысым P (кПа)</div>
+            <div class="s-val" id="it-P" style="color:var(--red);">—</div>
+          </div>
+          <div class="stat">
+            <div class="s-lbl">P·V (тұрақты)</div>
+            <div class="s-val" id="it-PV" style="color:var(--purple);">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">PV — графигі (изотерма)</div>
+        <div class="canvas-wrap">
+          <canvas id="isoterm-canvas" width="300" height="220"></canvas>
+          <p>Гипербола — T = const</p>
+        </div>
+      </div>
+    </div>
+    <div class="formula-box">
+      <div class="f-lbl">Бойль-Мариотт заңы</div>
+      <div class="f-eq">P · V = ν · R · T = const (T тұрақты кезде)</div>
+      <div class="f-val" id="it-formula">—</div>
+    </div>
+    <div class="info-panel" id="it-info">Параметрлерді реттеңіз.</div>
+  </div>
+
+  <!-- ISOBAR -->
+  <div id="tab-isobar" class="tab-content">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title">Параметрлер (P = const)</div>
+        <div style="background:var(--teal-dim); border:1px solid rgba(40,208,144,0.2); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:14px; font-size:13px; color:var(--teal); font-weight:700;">
+          Гей-Люссак заңы: V₁/T₁ = V₂/T₂
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Қысым P (кПа)</span>
+          <input type="range" id="ib-P" min="50" max="500" step="10" value="100">
+          <span class="sl-val" id="ib-P-out" style="color:var(--red);">100 кПа</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Температура T (К)</span>
+          <input type="range" id="ib-T" min="200" max="700" step="10" value="300">
+          <span class="sl-val" id="ib-T-out" style="color:var(--blue);">300 К</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Зат мөлшері (моль)</span>
+          <input type="range" id="ib-n" min="0.1" max="2" step="0.1" value="1">
+          <span class="sl-val" id="ib-n-out" style="color:var(--amber);">1.0 моль</span>
+        </div>
+        <div class="stat-grid" style="margin-top:6px;">
+          <div class="stat">
+            <div class="s-lbl">Көлем V (л)</div>
+            <div class="s-val" id="ib-V" style="color:var(--teal);">—</div>
+          </div>
+          <div class="stat">
+            <div class="s-lbl">V/T (тұрақты)</div>
+            <div class="s-val" id="ib-VT" style="color:var(--purple);">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">VT — графигі (изобара)</div>
+        <div class="canvas-wrap">
+          <canvas id="isobar-canvas" width="300" height="220"></canvas>
+          <p>Түзу сызық — P = const</p>
+        </div>
+      </div>
+    </div>
+    <div class="formula-box">
+      <div class="f-lbl">Гей-Люссак заңы</div>
+      <div class="f-eq">V / T = ν·R / P = const (P тұрақты кезде)</div>
+      <div class="f-val" id="ib-formula">—</div>
+    </div>
+    <div class="info-panel" id="ib-info">Параметрлерді реттеңіз.</div>
+  </div>
+
+  <!-- ISOCHOR -->
+  <div id="tab-isochor" class="tab-content">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title">Параметрлер (V = const)</div>
+        <div style="background:var(--amber-dim); border:1px solid rgba(240,176,40,0.2); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:14px; font-size:13px; color:var(--amber); font-weight:700;">
+          Шарль заңы: P₁/T₁ = P₂/T₂
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Көлем V (л)</span>
+          <input type="range" id="ic-V" min="1" max="20" step="0.5" value="5">
+          <span class="sl-val" id="ic-V-out" style="color:var(--teal);">5 л</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Температура T (К)</span>
+          <input type="range" id="ic-T" min="200" max="700" step="10" value="300">
+          <span class="sl-val" id="ic-T-out" style="color:var(--blue);">300 К</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl">Зат мөлшері (моль)</span>
+          <input type="range" id="ic-n" min="0.1" max="2" step="0.1" value="1">
+          <span class="sl-val" id="ic-n-out" style="color:var(--amber);">1.0 моль</span>
+        </div>
+        <div class="stat-grid" style="margin-top:6px;">
+          <div class="stat">
+            <div class="s-lbl">Қысым P (кПа)</div>
+            <div class="s-val" id="ic-P" style="color:var(--red);">—</div>
+          </div>
+          <div class="stat">
+            <div class="s-lbl">P/T (тұрақты)</div>
+            <div class="s-val" id="ic-PT" style="color:var(--purple);">—</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">PT — графигі (изохора)</div>
+        <div class="canvas-wrap">
+          <canvas id="isochor-canvas" width="300" height="220"></canvas>
+          <p>Түзу сызық — V = const</p>
+        </div>
+      </div>
+    </div>
+    <div class="formula-box">
+      <div class="f-lbl">Шарль заңы</div>
+      <div class="f-eq">P / T = ν·R / V = const (V тұрақты кезде)</div>
+      <div class="f-val" id="ic-formula">—</div>
+    </div>
+    <div class="info-panel" id="ic-info">Параметрлерді реттеңіз.</div>
+  </div>
+
+  <!-- DALTON -->
+  <div id="tab-dalton" class="tab-content">
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-title">Газдар қоспасы</div>
+        <div style="background:var(--purple-dim); border:1px solid rgba(152,120,240,0.2); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:14px; font-size:13px; color:var(--purple); font-weight:700;">
+          Дальтон заңы: P = P₁ + P₂ + P₃ + ...
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl" style="color:#5ab0f0;">Газ 1 қысымы (кПа)</span>
+          <input type="range" id="d-P1" min="0" max="200" step="5" value="80">
+          <span class="sl-val" id="d-P1-out" style="color:var(--blue);">80 кПа</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl" style="color:#28d090;">Газ 2 қысымы (кПа)</span>
+          <input type="range" id="d-P2" min="0" max="200" step="5" value="60">
+          <span class="sl-val" id="d-P2-out" style="color:var(--teal);">60 кПа</span>
+        </div>
+        <div class="sl-row">
+          <span class="sl-lbl" style="color:#f0b028;">Газ 3 қысымы (кПа)</span>
+          <input type="range" id="d-P3" min="0" max="200" step="5" value="40">
+          <span class="sl-val" id="d-P3-out" style="color:var(--amber);">40 кПа</span>
+        </div>
+        <div class="stat-grid" style="margin-top:10px;">
+          <div class="stat" style="grid-column:1/-1;">
+            <div class="s-lbl">Жалпы қысым P (кПа)</div>
+            <div class="s-val" id="d-total" style="color:var(--red); font-size:28px;">180</div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Қысым диаграммасы</div>
+        <div class="canvas-wrap">
+          <canvas id="dalton-canvas" width="300" height="220"></canvas>
+          <p>Ішінара қысымдар қосындысы</p>
+        </div>
+      </div>
+    </div>
+    <div class="formula-box">
+      <div class="f-lbl">Дальтон заңы</div>
+      <div class="f-eq">P = P₁ + P₂ + P₃</div>
+      <div class="f-val" id="d-formula">80 + 60 + 40 = 180 кПа</div>
+    </div>
+    <div class="info-panel" id="d-info">Газдардың ішінара қысымдарын реттеңіз.</div>
+  </div>
+
+  <!-- ALL GRAPHS -->
+  <div id="tab-graphs" class="tab-content">
+    <div class="panel">
+      <div class="panel-title">Үш изопроцестің графиктері</div>
+      <div style="display:flex; justify-content:center; margin-bottom:16px;">
+        <canvas id="all-graphs-canvas" width="600" height="260"></canvas>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+        <div class="process-card iso-t">
+          <h4 style="color:var(--blue);">🌡️ Изотерма</h4>
+          <p>T = const<br>P·V = const<br>График: гипербола (PV)</p>
+        </div>
+        <div class="process-card iso-p">
+          <h4 style="color:var(--teal);">📊 Изобара</h4>
+          <p>P = const<br>V/T = const<br>График: түзу (VT)</p>
+        </div>
+        <div class="process-card iso-v">
+          <h4 style="color:var(--amber);">🔒 Изохора</h4>
+          <p>V = const<br>P/T = const<br>График: түзу (PT)</p>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Изопроцестер салыстырмалы кестесі</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Процесс</th><th>Тұрақты шама</th><th>Заң</th><th>Формула</th><th>График</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="color:var(--blue);">Изотермдік</td>
+            <td class="hl">T = const</td>
+            <td>Бойль-Мариотт</td>
+            <td class="hl">P₁V₁ = P₂V₂</td>
+            <td>Гипербола (P-V)</td>
+          </tr>
+          <tr>
+            <td style="color:var(--teal);">Изобаралық</td>
+            <td class="hl">P = const</td>
+            <td>Гей-Люссак</td>
+            <td class="hl">V₁/T₁ = V₂/T₂</td>
+            <td>Түзу (V-T)</td>
+          </tr>
+          <tr>
+            <td style="color:var(--amber);">Изохоралық</td>
+            <td class="hl">V = const</td>
+            <td>Шарль</td>
+            <td class="hl">P₁/T₁ = P₂/T₂</td>
+            <td>Түзу (P-T)</td>
+          </tr>
+          <tr>
+            <td style="color:var(--purple);">Дальтон заңы</td>
+            <td class="hl">Қоспа</td>
+            <td>Дальтон</td>
+            <td class="hl">P = P₁+P₂+...</td>
+            <td>Бағана диаграмма</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+<footer>8-сынып Физика · Виртуалды зертхана · P₁V₁=P₂V₂ · V/T=const · P/T=const · P=P₁+P₂+P₃</footer>
+
+<script>
+const R = 8.314;
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'graphs') drawAllGraphs();
+}
+
+// ISOTERM
+function updateIsotherm() {
+  const T = parseInt(document.getElementById('it-T').value);
+  const V = parseFloat(document.getElementById('it-V').value);
+  const n = parseFloat(document.getElementById('it-n').value);
+  document.getElementById('it-T-out').textContent = T + ' К';
+  document.getElementById('it-V-out').textContent = V.toFixed(1) + ' л';
+  document.getElementById('it-n-out').textContent = n.toFixed(1) + ' моль';
+
+  const P = (n * R * T) / (V * 0.001) / 1000;
+  const PV = Math.round(P * V * 10) / 10;
+  document.getElementById('it-P').textContent = P.toFixed(1);
+  document.getElementById('it-PV').textContent = PV;
+  document.getElementById('it-formula').textContent = `P = νRT/V = ${n}×8.314×${T}/${V}л = ${P.toFixed(1)} кПа`;
+  document.getElementById('it-info').innerHTML =
+    `T = <strong>${T} К</strong> тұрақты. Газ көлемі ${V.toFixed(1)} л болғанда қысым <strong>P = ${P.toFixed(1)} кПа</strong>. Бойль-Мариотт заңы: P·V = ${PV} кПа·л = тұрақты.`;
+  drawIsotherm(T, n);
+}
+
+function drawIsotherm(T, n) {
+  const c = document.getElementById('isoterm-canvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,300,220);
+  ctx.fillStyle='#0e1220'; ctx.fillRect(0,0,300,220);
+
+  const pad = {l:45, r:15, t:15, b:35};
+  const w = 300-pad.l-pad.r, h = 220-pad.t-pad.b;
+
+  ctx.strokeStyle='rgba(90,176,240,0.15)'; ctx.lineWidth=0.5;
+  for (let i=0;i<=4;i++) {
+    const y = pad.t+h/4*i;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+w,y); ctx.stroke();
+    const x = pad.l+w/4*i;
+    ctx.beginPath(); ctx.moveTo(x,pad.t); ctx.lineTo(x,pad.t+h); ctx.stroke();
+  }
+
+  const Vmax = 20, Pmax = 800;
+  const curV = parseFloat(document.getElementById('it-V').value);
+
+  [T, T*1.5, T*2].forEach((temp, ti) => {
+    const colors = ['#5ab0f0','#28d090','#f0b028'];
+    ctx.strokeStyle = colors[ti]; ctx.lineWidth = ti===0 ? 2.5 : 1.2;
+    ctx.beginPath();
+    let first = true;
+    for (let V=0.5; V<=Vmax; V+=0.2) {
+      const P = (n * R * temp) / (V * 0.001) / 1000;
+      if (P > Pmax || P < 0) continue;
+      const px = pad.l + (V/Vmax)*w;
+      const py = pad.t + h - (P/Pmax)*h;
+      if (first) { ctx.moveTo(px,py); first=false; } else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.fillStyle=colors[ti]; ctx.font='9px Nunito'; ctx.textAlign='left';
+    ctx.fillText('T='+(temp).toFixed(0)+'К', pad.l+w-55, pad.t+ti*14+10);
+  });
+
+  const curP = (n * R * T) / (curV * 0.001) / 1000;
+  const dotX = pad.l+(curV/Vmax)*w;
+  const dotY = pad.t+h-(Math.min(curP,Pmax)/Pmax)*h;
+  ctx.fillStyle='#f06858'; ctx.beginPath(); ctx.arc(dotX,dotY,6,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+
+  ctx.fillStyle='#6878a0'; ctx.font='10px Nunito'; ctx.textAlign='center';
+  ctx.fillText('Көлем V (л)', pad.l+w/2, 215);
+  ctx.save(); ctx.translate(12,pad.t+h/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('Қысым P (кПа)', 0, 0); ctx.restore();
+
+  for (let i=1;i<=4;i++) {
+    ctx.fillStyle='#6878a0'; ctx.textAlign='right';
+    ctx.fillText(Math.round(Pmax/4*i), pad.l-4, pad.t+h-h/4*i+4);
+    ctx.textAlign='center';
+    ctx.fillText(Math.round(Vmax/4*i), pad.l+w/4*i, pad.t+h+12);
+  }
+}
+
+// ISOBAR
+function updateIsobar() {
+  const P = parseInt(document.getElementById('ib-P').value);
+  const T = parseInt(document.getElementById('ib-T').value);
+  const n = parseFloat(document.getElementById('ib-n').value);
+  document.getElementById('ib-P-out').textContent = P + ' кПа';
+  document.getElementById('ib-T-out').textContent = T + ' К';
+  document.getElementById('ib-n-out').textContent = n.toFixed(1) + ' моль';
+
+  const V = (n * R * T) / (P * 1000) * 1000;
+  const VT = (V / T).toFixed(4);
+  document.getElementById('ib-V').textContent = V.toFixed(2) + ' л';
+  document.getElementById('ib-VT').textContent = VT;
+  document.getElementById('ib-formula').textContent = `V = νRT/P = ${n}×8.314×${T}/${P}кПа = ${V.toFixed(2)} л`;
+  document.getElementById('ib-info').innerHTML =
+    `P = <strong>${P} кПа</strong> тұрақты. T = ${T} К болғанда көлем <strong>V = ${V.toFixed(2)} л</strong>. Гей-Люссак заңы: V/T = ${VT} л/К = тұрақты.`;
+  drawIsobar(P, n);
+}
+
+function drawIsobar(P, n) {
+  const c = document.getElementById('isobar-canvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,300,220);
+  ctx.fillStyle='#0e1220'; ctx.fillRect(0,0,300,220);
+
+  const pad = {l:50,r:15,t:15,b:35};
+  const w=300-pad.l-pad.r, h=220-pad.t-pad.b;
+  const Tmax=700, Vmax=25;
+
+  ctx.strokeStyle='rgba(40,208,144,0.15)'; ctx.lineWidth=0.5;
+  for (let i=0;i<=4;i++) {
+    ctx.beginPath(); ctx.moveTo(pad.l,pad.t+h/4*i); ctx.lineTo(pad.l+w,pad.t+h/4*i); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.l+w/4*i,pad.t); ctx.lineTo(pad.l+w/4*i,pad.t+h); ctx.stroke();
+  }
+
+  const curT = parseInt(document.getElementById('ib-T').value);
+  [P, P*1.5, P*2].forEach((press, pi) => {
+    const colors = ['#28d090','#5ab0f0','#f0b028'];
+    ctx.strokeStyle=colors[pi]; ctx.lineWidth=pi===0?2.5:1.2;
+    ctx.beginPath();
+    for (let T=100; T<=Tmax; T+=10) {
+      const V = (n*R*T)/(press*1000)*1000;
+      if (V>Vmax) break;
+      const px=pad.l+(T/Tmax)*w, py=pad.t+h-(V/Vmax)*h;
+      T===100?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.fillStyle=colors[pi]; ctx.font='9px Nunito'; ctx.textAlign='left';
+    ctx.fillText('P='+(press).toFixed(0)+'кПа', pad.l+w-65, pad.t+pi*14+10);
+  });
+
+  const curV = (n*R*curT)/(P*1000)*1000;
+  const dotX=pad.l+(curT/Tmax)*w, dotY=pad.t+h-(Math.min(curV,Vmax)/Vmax)*h;
+  ctx.fillStyle='#f06858'; ctx.beginPath(); ctx.arc(dotX,dotY,6,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+
+  ctx.fillStyle='#6878a0'; ctx.font='10px Nunito'; ctx.textAlign='center';
+  ctx.fillText('Температура T (К)', pad.l+w/2, 215);
+  ctx.save(); ctx.translate(12,pad.t+h/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('Көлем V (л)', 0, 0); ctx.restore();
+
+  for (let i=1;i<=4;i++) {
+    ctx.fillStyle='#6878a0'; ctx.textAlign='right';
+    ctx.fillText(Math.round(Vmax/4*i), pad.l-4, pad.t+h-h/4*i+4);
+    ctx.textAlign='center';
+    ctx.fillText(Math.round(Tmax/4*i), pad.l+w/4*i, pad.t+h+12);
+  }
+}
+
+// ISOCHOR
+function updateIsochor() {
+  const V = parseFloat(document.getElementById('ic-V').value);
+  const T = parseInt(document.getElementById('ic-T').value);
+  const n = parseFloat(document.getElementById('ic-n').value);
+  document.getElementById('ic-V-out').textContent = V.toFixed(1) + ' л';
+  document.getElementById('ic-T-out').textContent = T + ' К';
+  document.getElementById('ic-n-out').textContent = n.toFixed(1) + ' моль';
+
+  const P = (n*R*T)/(V*0.001)/1000;
+  const PT = (P/T).toFixed(4);
+  document.getElementById('ic-P').textContent = P.toFixed(1);
+  document.getElementById('ic-PT').textContent = PT;
+  document.getElementById('ic-formula').textContent = `P = νRT/V = ${n}×8.314×${T}/${V}л = ${P.toFixed(1)} кПа`;
+  document.getElementById('ic-info').innerHTML =
+    `V = <strong>${V.toFixed(1)} л</strong> тұрақты. T = ${T} К болғанда қысым <strong>P = ${P.toFixed(1)} кПа</strong>. Шарль заңы: P/T = ${PT} кПа/К = тұрақты.`;
+  drawIsochor(V, n);
+}
+
+function drawIsochor(V, n) {
+  const c = document.getElementById('isochor-canvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,300,220);
+  ctx.fillStyle='#0e1220'; ctx.fillRect(0,0,300,220);
+
+  const pad={l:50,r:15,t:15,b:35};
+  const w=300-pad.l-pad.r, h=220-pad.t-pad.b;
+  const Tmax=700, Pmax=1000;
+
+  ctx.strokeStyle='rgba(240,176,40,0.15)'; ctx.lineWidth=0.5;
+  for (let i=0;i<=4;i++) {
+    ctx.beginPath(); ctx.moveTo(pad.l,pad.t+h/4*i); ctx.lineTo(pad.l+w,pad.t+h/4*i); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pad.l+w/4*i,pad.t); ctx.lineTo(pad.l+w/4*i,pad.t+h); ctx.stroke();
+  }
+
+  const curT = parseInt(document.getElementById('ic-T').value);
+  [V, V*1.5, V*2].forEach((vol, vi) => {
+    const colors=['#f0b028','#28d090','#5ab0f0'];
+    ctx.strokeStyle=colors[vi]; ctx.lineWidth=vi===0?2.5:1.2;
+    ctx.beginPath();
+    for (let T=50; T<=Tmax; T+=10) {
+      const P=(n*R*T)/(vol*0.001)/1000;
+      if (P>Pmax) break;
+      const px=pad.l+(T/Tmax)*w, py=pad.t+h-(P/Pmax)*h;
+      T===50?ctx.moveTo(px,py):ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+    ctx.fillStyle=colors[vi]; ctx.font='9px Nunito'; ctx.textAlign='left';
+    ctx.fillText('V='+(vol).toFixed(1)+'л', pad.l+w-55, pad.t+vi*14+10);
+  });
+
+  const curP=(n*R*curT)/(V*0.001)/1000;
+  const dotX=pad.l+(curT/Tmax)*w, dotY=pad.t+h-(Math.min(curP,Pmax)/Pmax)*h;
+  ctx.fillStyle='#f06858'; ctx.beginPath(); ctx.arc(dotX,dotY,6,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+
+  ctx.fillStyle='#6878a0'; ctx.font='10px Nunito'; ctx.textAlign='center';
+  ctx.fillText('Температура T (К)', pad.l+w/2, 215);
+  ctx.save(); ctx.translate(12,pad.t+h/2); ctx.rotate(-Math.PI/2);
+  ctx.fillText('Қысым P (кПа)', 0, 0); ctx.restore();
+
+  for (let i=1;i<=4;i++) {
+    ctx.fillStyle='#6878a0'; ctx.textAlign='right';
+    ctx.fillText(Math.round(Pmax/4*i), pad.l-4, pad.t+h-h/4*i+4);
+    ctx.textAlign='center';
+    ctx.fillText(Math.round(Tmax/4*i), pad.l+w/4*i, pad.t+h+12);
+  }
+}
+
+// DALTON
+function updateDalton() {
+  const P1 = parseInt(document.getElementById('d-P1').value);
+  const P2 = parseInt(document.getElementById('d-P2').value);
+  const P3 = parseInt(document.getElementById('d-P3').value);
+  document.getElementById('d-P1-out').textContent = P1 + ' кПа';
+  document.getElementById('d-P2-out').textContent = P2 + ' кПа';
+  document.getElementById('d-P3-out').textContent = P3 + ' кПа';
+  const total = P1+P2+P3;
+  document.getElementById('d-total').textContent = total + ' кПа';
+  document.getElementById('d-formula').textContent = `${P1} + ${P2} + ${P3} = ${total} кПа`;
+  document.getElementById('d-info').innerHTML =
+    `Дальтон заңы: газ қоспасының жалпы қысымы ішінара қысымдардың қосындысына тең. P = <strong>${P1} + ${P2} + ${P3} = ${total} кПа</strong>. Әр газ қоспада жалғыз өзі болғандай қысым жасайды.`;
+  drawDalton(P1, P2, P3);
+}
+
+function drawDalton(P1, P2, P3) {
+  const c = document.getElementById('dalton-canvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,300,220);
+  ctx.fillStyle='#0e1220'; ctx.fillRect(0,0,300,220);
+
+  const total = P1+P2+P3;
+  const maxP = Math.max(total, 100);
+  const bars = [
+    {label:'Газ 1', val:P1, color:'#5ab0f0'},
+    {label:'Газ 2', val:P2, color:'#28d090'},
+    {label:'Газ 3', val:P3, color:'#f0b028'},
+    {label:'Жалпы', val:total, color:'#f06858'},
+  ];
+
+  const pad={l:45,r:15,t:20,b:40};
+  const w=300-pad.l-pad.r, h=220-pad.t-pad.b;
+  const bw = (w-30)/4;
+
+  ctx.strokeStyle='rgba(152,120,240,0.15)'; ctx.lineWidth=0.5;
+  for (let i=0;i<=4;i++) {
+    const y=pad.t+h/4*i;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+w,y); ctx.stroke();
+    ctx.fillStyle='#6878a0'; ctx.font='9px Nunito'; ctx.textAlign='right';
+    ctx.fillText(Math.round(maxP/4*(4-i)), pad.l-4, y+4);
+  }
+
+  bars.forEach((bar, i) => {
+    const bh = (bar.val / maxP) * h;
+    const bx = pad.l + i*(bw+10);
+    const by = pad.t + h - bh;
+    ctx.fillStyle = bar.color + 'cc';
+    ctx.fillRect(bx, by, bw, bh);
+    ctx.strokeStyle = bar.color; ctx.lineWidth=1.5;
+    ctx.strokeRect(bx, by, bw, bh);
+    ctx.fillStyle=bar.color; ctx.font='bold 11px Nunito'; ctx.textAlign='center';
+    ctx.fillText(bar.val, bx+bw/2, by-6);
+    ctx.fillStyle='#6878a0'; ctx.font='10px Nunito';
+    ctx.fillText(bar.label, bx+bw/2, pad.t+h+14);
+  });
+
+  ctx.fillStyle='#6878a0'; ctx.font='10px Nunito'; ctx.textAlign='center';
+  ctx.fillText('кПа', pad.l+w/2, 215);
+}
+
+// ALL GRAPHS
+function drawAllGraphs() {
+  const c = document.getElementById('all-graphs-canvas');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0,0,600,260);
+  ctx.fillStyle='#0e1220'; ctx.fillRect(0,0,600,260);
+
+  const panels = [
+    {x:10, title:'Изотерма (PV)', color:'#5ab0f0', type:'hyp'},
+    {x:210, title:'Изобара (VT)', color:'#28d090', type:'line'},
+    {x:410, title:'Изохора (PT)', color:'#f0b028', type:'line'},
+  ];
+
+  panels.forEach(p => {
+    const pw=180, ph=200, pad=30;
+    ctx.fillStyle='#161d30'; ctx.fillRect(p.x,20,pw,ph);
+    ctx.strokeStyle=p.color+'40'; ctx.lineWidth=1; ctx.strokeRect(p.x,20,pw,ph);
+    ctx.fillStyle=p.color; ctx.font='bold 11px Nunito'; ctx.textAlign='center';
+    ctx.fillText(p.title, p.x+pw/2, 16);
+
+    ctx.strokeStyle='rgba(255,255,255,0.08)'; ctx.lineWidth=0.5;
+    ctx.beginPath(); ctx.moveTo(p.x+pad,20); ctx.lineTo(p.x+pad,220); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(p.x,220-pad); ctx.lineTo(p.x+pw,220-pad); ctx.stroke();
+
+    ctx.strokeStyle=p.color; ctx.lineWidth=2.5;
+    ctx.beginPath();
+    if (p.type==='hyp') {
+      for (let x=5;x<=140;x+=2) {
+        const y = 140/x * 25;
+        const px=p.x+pad+x, py=220-pad-Math.min(y,160);
+        x===5?ctx.moveTo(px,py):ctx.lineTo(px,py);
+      }
+    } else {
+      ctx.moveTo(p.x+pad, 220-pad);
+      ctx.lineTo(p.x+pw-10, 20+10);
+    }
+    ctx.stroke();
+
+    ctx.fillStyle='rgba(255,255,255,0.4)'; ctx.font='9px Nunito'; ctx.textAlign='center';
+    if (p.type==='hyp') { ctx.fillText('V', p.x+pw-8, 220-pad+12); ctx.fillText('P', p.x+pad-8, 28); }
+    else if (p.title.includes('VT')) { ctx.fillText('T', p.x+pw-8, 220-pad+12); ctx.fillText('V', p.x+pad-8, 28); }
+    else { ctx.fillText('T', p.x+pw-8, 220-pad+12); ctx.fillText('P', p.x+pad-8, 28); }
+  });
+}
+
+// Events
+['it-T','it-V','it-n'].forEach(id => document.getElementById(id).addEventListener('input', updateIsotherm));
+['ib-P','ib-T','ib-n'].forEach(id => document.getElementById(id).addEventListener('input', updateIsobar));
+['ic-V','ic-T','ic-n'].forEach(id => document.getElementById(id).addEventListener('input', updateIsochor));
+['d-P1','d-P2','d-P3'].forEach(id => document.getElementById(id).addEventListener('input', updateDalton));
+
+updateIsotherm(); updateIsobar(); updateIsochor(); updateDalton();
+</script>
+</body>
+</html>
